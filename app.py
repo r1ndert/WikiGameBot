@@ -24,10 +24,10 @@ st.title("WikiGameBot")
 
 # User input for Start Topic
 st.write("Enter a topic to start on and/or a topic to end on. If left blank, a topic will be chosen randomly.")
-start_topic = st.text_input("Start Topic", "Enter the starting topic here")
+start_topic = st.text_input("Start Topic")#, "Enter the starting topic here")
 
 # User input for Target Topic
-target_topic = st.text_input("Target Topic", "Enter the target topic here")
+target_topic = st.text_input("Target Topic")#, "Enter the target topic here")
 
 # if start not passed, get a random one
 if not start_topic:
