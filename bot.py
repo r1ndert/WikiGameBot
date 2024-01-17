@@ -237,7 +237,7 @@ class WikiGameBot():
                     "-" * 50,
                 ]
 
-                self.printouts.extend(printouts)
+                self.printouts.append(printouts)
                 
                 # print progress
                 for i in self.printouts[-1]:
