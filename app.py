@@ -46,10 +46,6 @@ if st.button("Begin"):
     game = WikiGameBot(wiki_wiki = wiki_wiki, start_topic = start_topic, target_topic = target_topic)
     game.play_game()
     
-    # printing progress throughout the game
-    for i in game.printouts[::-1]: # reversing so the newest is always at the top
-        st.write(i)
-
     st.divider()
 
 outro_message = """
