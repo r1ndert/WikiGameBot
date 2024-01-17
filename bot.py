@@ -4,7 +4,6 @@ import string
 # !pip install Wikipedia-API -q
 import wikipediaapi
 import streamlit as st
-from IPython.display import clear_output
 from funcs import *
 
 class WikiGameBot():
@@ -168,7 +167,7 @@ class WikiGameBot():
 
         return most_similar_topic, similarity_to_target # return page topic whose summary that is most similar to target summary
     
-    def play_game(self, verbose = True, clear_cell = False):
+    def play_game(self, verbose = True):
         """
         Starts and manages the Wiki game until the target topic is reached.
 
@@ -226,9 +225,6 @@ class WikiGameBot():
             )
 
             if verbose:
-                if clear_cell:
-                    if turn_num % 4 == 0:
-                        clear_output(wait=True)
                 # print("-" * 50)
                 # print(f"Turn: {turn_num}")
                 # print(f"Turn time: {round(turn_time, 2)}s")
