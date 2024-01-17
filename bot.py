@@ -239,7 +239,7 @@ class WikiGameBot():
                 
                 # print progress
                 for i in self.printouts[::-1]:
-                    print(i)
+                    st.write(i)
 
             # else, set new next_topic to current topic and loop
             current_topic = next_topic
