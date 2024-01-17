@@ -89,6 +89,7 @@ class WikiGameBot():
         target_page = self.wiki_wiki.page(self.target_topic)
         self.current_summary = "" # this is overwritten after game starts
         self.target_summary = get_page_summary(target_page)
+        self.printouts = []
 
     def log_turn(self, turn_dict):
         """
@@ -225,27 +226,19 @@ class WikiGameBot():
             )
 
             if verbose:
-                # print("-" * 50)
-                # print(f"Turn: {turn_num}")
-                # print(f"Turn time: {round(turn_time, 2)}s")
-                # print(f"Total time: {round(sum(self.game_log['turn_time']), 2)}s")
-                # print(f"Start topic: {self.start_topic.replace('_', ' ')}")
-                # print(f"Current topic: {current_topic.replace('_', ' ')}")
-                # print(f"Next topic: {next_topic.replace('_', ' ')}")
-                # print(f"Target topic: {self.target_topic.replace('_', ' ')}")
-                # print(f"Current similarity to target: {round(similarity_to_target, 2)}") # rounded to 2 digits to avoid gross printouts
-                # print("-" * 50)
-                st.write("-" * 50)
-                st.write(f"Turn: {turn_num}")
-                st.write(f"Turn time: {round(turn_time, 2)}s")
-                st.write(f"Total time: {round(sum(self.game_log['turn_time']), 2)}s")
-                st.write(f"Start topic: {self.start_topic.replace('_', ' ')}")
-                st.write(f"Current topic: {current_topic.replace('_', ' ')}")
-                st.write(f"Next topic: {next_topic.replace('_', ' ')}")
-                st.write(f"Target topic: {self.target_topic.replace('_', ' ')}")
-                st.write(f"Current similarity to target: {round(similarity_to_target, 2)}") # rounded to 2 digits to avoid gross printouts
-                st.write("-" * 50)
+                printouts = [
+                    f"Turn: {turn_num}",
+                    f"Turn time: {round(turn_time, 2)}s",
+                    f"Total time: {round(sum(self.game_log['turn_time']), 2)}s",
+                    f"Start topic: {self.start_topic.replace('_', ' ')}",
+                    f"Current topic: {current_topic.replace('_', ' ')}",
+                    f"Next topic: {next_topic.replace('_', ' ')}",
+                    f"Target topic: {self.target_topic.replace('_', ' ')}",
+                    f"Current similarity to target: {round(similarity_to_target, 2)}",
+                ]
 
+                self.printouts.extend(printouts)
+                
             # else, set new next_topic to current topic and loop
             current_topic = next_topic
 
