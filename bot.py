@@ -225,6 +225,7 @@ class WikiGameBot():
 
             if verbose:
                 printouts = [
+                    "-" * 50,
                     f"Turn: {turn_num}",
                     f"Turn time: {round(turn_time, 2)}s",
                     f"Total time: {round(sum(self.game_log['turn_time']), 2)}s",
@@ -233,12 +234,13 @@ class WikiGameBot():
                     f"Next topic: {next_topic.replace('_', ' ')}",
                     f"Target topic: {self.target_topic.replace('_', ' ')}",
                     f"Current similarity to target: {round(similarity_to_target, 2)}",
+                    "-" * 50,
                 ]
 
                 self.printouts.extend(printouts)
                 
                 # print progress
-                for i in self.printouts[::-1]:
+                for i in self.printouts[-1]:
                     st.write(i)
 
             # else, set new next_topic to current topic and loop
