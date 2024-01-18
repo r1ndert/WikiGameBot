@@ -64,6 +64,6 @@ Thanks for checking out this app. If you have any questions or comments or would
 st.write(outro_message)
 
 disclaimer = """
-Disclaimer: This creator of this webapp and author of this code is not responsible for the content produced by the app. The context produced by this app is a result of content sourced from Wikipedia and is property of Wikipedia.
+Disclaimer: This creator of this webapp and author of this code is not responsible for the content produced by the app. The content produced by this app is a result of content sourced from Wikipedia and is property of Wikipedia.
 """.strip()
 st.write(disclaimer)
