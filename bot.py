@@ -95,7 +95,7 @@ class WikiGameBot():
         self.most_similar_to_target = {
             'topic' : None,
             'summary' : None,
-            'embedding' : None,
+            'similarity' : 0,
         }
 
     def log_turn(self, turn_dict):
@@ -169,17 +169,24 @@ class WikiGameBot():
         top_n_pages, _ = get_most_similar_strings(self.target_summary, pages, n = top_n)
 
         # get the summary of top_n // 2 pages and get the most similar summary to target summary
-        top_n_summaries = {get_page_summary(self.wiki_wiki.page(page)).strip() : page for page in top_n_pages[: top_n // 2] if get_page_summary(self.wiki_wiki.page(page)).strip()}
-        top_n_pages, top_n_similaries = get_most_similar_strings(self.target_summary, list(top_n_summaries.keys()), n = top_n)
-        most_similar_topic, similarity_to_target = top_n_summaries[top_n_pages[0]], top_n_similaries[0]
+        top_n_summaries_to_pages = {get_page_summary(self.wiki_wiki.page(page)).strip() : page for page in top_n_pages[: top_n // 2] if get_page_summary(self.wiki_wiki.page(page)).strip()}
+        top_n_pages_to_summaries = {page : summary for summary, page in top_n_summaries_to_pages.items()}
+        top_n_pages, top_n_similaries = get_most_similar_strings(self.target_summary, list(top_n_summaries_to_pages.keys()), n = top_n)
+        most_similar_topic, similarity_to_target = top_n_summaries_to_pages[top_n_pages[0]], top_n_similaries[0]
 
         # if similarity to target is less than the current most similar of the run thus far,
         # calculate similarities between all summary embeddings and embedding for the previously most similar topic
         # this serves as a way to potentially redirect from topic rabbit holes
         if similarity_to_target < self.most_similar_to_target['similarity']:
             # top_n_summaries = {get_page_summary(self.wiki_wiki.page(page)).strip() : page for page in top_n_pages[: top_n // 2] if get_page_summary(self.wiki_wiki.page(page)).strip()}
-            top_n_pages, top_n_similaries = get_most_similar_strings(self.most_similar_to_target['summary'], list(top_n_summaries.keys()), n = top_n)
-            most_similar_topic, similarity_to_target = top_n_summaries[top_n_pages[0]], top_n_similaries[0]
+            top_n_pages, top_n_similaries = get_most_similar_strings(self.most_similar_to_target['summary'], list(top_n_summaries_to_pages.keys()), n = top_n)
+            most_similar_topic, similarity_to_target = top_n_summaries_to_pages[top_n_pages[0]], top_n_similaries[0]
+        else:
+            self.most_similar_to_target = {
+                'topic' : most_similar_topic,
+                'summary' : top_n_pages_to_summaries[most_similar_topic],
+                'similarity' : 0,
+            }
 
         return most_similar_topic, similarity_to_target # return page topic whose summary that is most similar to target summary
     
