@@ -103,4 +103,6 @@ def plot_topic_clusters(game_csv):
     plt.ylabel('Topic')
     plt.title('Topic Distribution Over Turns')
     plt.legend()
-    plt.show()
+
+    # Display the plot in Streamlit
+    st.pyplot(plt)
