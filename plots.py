@@ -5,6 +5,7 @@ import plotly.express as px
 from sklearn.manifold import TSNE
 from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
+from transformers import pipeline
 
 def line_plot(game_csv):
     fig = px.line(game_csv, x='turn', y='similarity_to_target', markers=True,
@@ -27,45 +28,9 @@ def line_plot(game_csv):
 
     st.plotly_chart(fig)  # Use Streamlit's function to display Plotly chart
 
-def plot_embeddings(game_csv):
-    embeddings = np.vstack(game_csv['embedding'].apply(pd.Series))
-    print(embeddings.shape)
-    print(embeddings[0].shape)
-
-    # Check if the embeddings have the minimum required shape
-    if embeddings.shape[0] > 1 and embeddings.shape[1] > 1:
-        # Dimensionality Reduction
-        tsne = TSNE(n_components=2, random_state=0)
-        reduced_embeddings = tsne.fit_transform(embeddings)
-
-        # Plotting with Matplotlib
-        fig, ax = plt.subplots(figsize=(12, 8))
-        ax.scatter(reduced_embeddings[:, 0], reduced_embeddings[:, 1], label='Topics')
-
-        # Dimensionality Reduction
-        tsne = TSNE(n_components=2, random_state=0)
-        reduced_embeddings = tsne.fit_transform(embeddings)
-
-        # Plotting with Matplotlib
-        fig, ax = plt.subplots(figsize=(12, 8))
-        ax.scatter(reduced_embeddings[:, 0], reduced_embeddings[:, 1], label='Topics')
-
-        # Highlight the first and last topic
-        topics = game_csv['topic'].tolist()
-        ax.scatter(reduced_embeddings[0, 0], reduced_embeddings[0, 1], color='red', label='First Topic')
-        ax.scatter(reduced_embeddings[-1, 0], reduced_embeddings[-1, 1], color='green', label='Last Topic')
-
-        # Annotate all points
-        for i, word in enumerate(topics):
-            ax.annotate(word, xy=(reduced_embeddings[i, 0], reduced_embeddings[i, 1]))
-
-        ax.legend()
-
-        st.pyplot(fig)  # Use Streamlit's function to display Matplotlib figure
-
 def plot_topic_clusters(game_csv):
+    # Assuming 'game_csv' contains 'embedding', 'turn', and 'text_column'
 
-    # Assuming 'game_csv' is your pandas DataFrame, 'embedding' and 'turn' are the columns
     embeddings = pd.DataFrame(game_csv['embedding'].tolist())
 
     # Function to calculate the optimal number of clusters
@@ -93,35 +58,39 @@ def plot_topic_clusters(game_csv):
     kmeans = KMeans(n_clusters=optimal_k, random_state=42)
     game_csv['topic'] = kmeans.fit_predict(embeddings)
 
-    # # Plotting the clusters
-    # plt.figure(figsize=(10, 6))
-    # for topic in range(optimal_k):
-    #     subset = game_csv[game_csv['topic'] == topic]
-    #     plt.plot(subset['turn'], [topic] * len(subset), 'o', label=f'Topic {topic}')
+    # Create a pipeline for text classification
+    pipe = pipeline("text-classification", model="jonaskoenig/topic_classification_04")
 
-    # plt.xlabel('Turn')
-    # plt.ylabel('Topic')
-    # plt.title('Topic Distribution Over Turns')
-    # plt.legend()
+    # Get representative texts for each topic
+    representative_texts = []
+    for topic in range(optimal_k):
+        sample = game_csv[game_csv['topic'] == topic].sample(1)['text_column']  # Replace 'text_column' with the name of your text column
+        representative_texts.append(sample.iloc[0])
 
-    # # Display the plot in Streamlit
-    # st.pyplot(plt)
-    plot_game_csv = game_csv.groupby(['turn', 'topic']).size().reset_index(name='count')
+    # Classify these texts to get labels
+    topic_labels = [pipe(text)[0]['label'] for text in representative_texts]
 
-    fig = px.line(plot_game_csv, x='turn', y='topic', markers=True, 
+    # Create a mapping from topic number to label
+    topic_label_mapping = {i: label for i, label in enumerate(topic_labels)}
+
+    # Apply this mapping to your game_csv DataFrame
+    game_csv['topic_label'] = game_csv['topic'].map(topic_label_mapping)
+
+    # Now modify the plotting code to use 'topic_label'
+    plot_game_csv = game_csv.groupby(['turn', 'topic_label']).size().reset_index(name='count')
+    fig = px.line(plot_game_csv, x='turn', y='topic_label', markers=True, 
                   title='Topic Selection Over Time',
-                  labels={'turn': 'Turn', 'topic': 'Topic'})
+                  labels={'turn': 'Turn', 'topic_label': 'Topic'})
 
     fig.update_traces(hovertemplate='Turn: %{x}<br>Topic: %{y}<br>Count: %{customdata}<extra></extra>',
                       customdata=plot_game_csv['count'])
 
-    # Update the layout for the title and the background colors
     fig.update_layout({
         'title': {
             'text': 'Topic Distribution Over Turns',
-            'x': 0.5,  # Centers the title
+            'x': 0.5,
             'xanchor': 'center'
         }
     })
 
-    st.plotly_chart(fig)  # Use Streamlit's function to display Plotly chart
+    st.plotly_chart(fig)
