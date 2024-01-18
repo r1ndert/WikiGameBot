@@ -168,7 +168,7 @@ class WikiGameBot():
         pages = [page for page in validate_pages(current_page) if page not in visited]
         if self.target_topic in pages:
             return self.target_topic, 1
-        top_n_pages, _ = get_most_similar_strings(self.target_summary, pages, n = top_n)
+        embs, top_n_pages, _ = get_most_similar_strings(self.target_summary, pages, n = top_n)
 
         # get the summary of top_n // 2 pages and get the most similar summary to target summary
         top_n_summaries_to_pages = {get_page_summary(self.wiki_wiki.page(page)).strip() : page for page in top_n_pages[: top_n // 2] if get_page_summary(self.wiki_wiki.page(page)).strip()}
