@@ -248,11 +248,6 @@ class WikiGameBot():
                 }
             )
 
-            # if same as target topic, game is done
-            if current_topic.lower().strip() == self.target_topic.replace('_', ' ').lower().strip():
-                st.write(f"Congratulations! WikiGameBot has finished the game in {turn_num} turns, in {round(sum(self.game_log['turn_time']), 2)} seconds!")
-                st.write(f"Average topic similarity was {round(sum(self.game_log['similarity_to_target']) / len(self.game_log['similarity_to_target']), 2)}.")
-                break
 
             if verbose:
                 printouts = [
@@ -273,6 +268,12 @@ class WikiGameBot():
                 # print progress
                 for i in self.printouts[-1]:
                     st.write(i)
+
+            # if same as target topic, game is done
+            if current_topic.lower().strip() == self.target_topic.replace('_', ' ').lower().strip():
+                st.write(f"Congratulations! WikiGameBot has finished the game in {turn_num} turns, in {round(sum(self.game_log['turn_time']), 2)} seconds!")
+                st.write(f"Average topic similarity was {round(sum(self.game_log['similarity_to_target']) / len(self.game_log['similarity_to_target']), 2)}.")
+                break
 
             # else, set new next_topic to current topic and loop
             current_topic = next_topic
