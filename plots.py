@@ -13,15 +13,23 @@ def line_plot(game_csv):
     fig.update_traces(hovertemplate='Wiki Page Number: %{x}<br>Similarity: %{y}<br>Page Title: %{customdata[0]}<br>Turn Time (seconds): %{customdata[1]}<extra></extra>',
                       customdata=game_csv[['current_topic', 'turn_time']])
 
+    # Update the layout for the title and the background colors
     fig.update_layout({
         'plot_bgcolor': 'rgba(0, 0, 0, 0)',  # Transparent background
         'paper_bgcolor': 'rgba(200, 200, 200, 1)',  # Light grey background
+        'title': {
+            'text': 'Line Plot of Similarity Over Time',
+            'x': 0.5,  # Centers the title
+            'xanchor': 'center'
+        }
     })
 
     st.plotly_chart(fig)  # Use Streamlit's function to display Plotly chart
 
 def plot_embeddings(game_csv):
     embeddings = np.vstack(game_csv['embedding'].apply(pd.Series))
+    print(embeddings.shape)
+    print(embeddings[0].shape)
 
     # Check if the embeddings have the minimum required shape
     if embeddings.shape[0] > 1 and embeddings.shape[1] > 1:
