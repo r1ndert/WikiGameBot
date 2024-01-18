@@ -23,23 +23,33 @@ def line_plot(game_csv):
 def plot_embeddings(game_csv):
     embeddings = np.vstack(game_csv['embedding'].apply(pd.Series))
 
-    # Dimensionality Reduction
-    tsne = TSNE(n_components=2, random_state=0)
-    reduced_embeddings = tsne.fit_transform(embeddings)
+    # Check if the embeddings have the minimum required shape
+    if embeddings.shape[0] > 1 and embeddings.shape[1] > 1:
+        # Dimensionality Reduction
+        tsne = TSNE(n_components=2, random_state=0)
+        reduced_embeddings = tsne.fit_transform(embeddings)
 
-    # Plotting with Matplotlib
-    fig, ax = plt.subplots(figsize=(12, 8))
-    ax.scatter(reduced_embeddings[:, 0], reduced_embeddings[:, 1], label='Topics')
+        # Plotting with Matplotlib
+        fig, ax = plt.subplots(figsize=(12, 8))
+        ax.scatter(reduced_embeddings[:, 0], reduced_embeddings[:, 1], label='Topics')
 
-    # Highlight the first and last topic
-    topics = game_csv['topic'].tolist()
-    ax.scatter(reduced_embeddings[0, 0], reduced_embeddings[0, 1], color='red', label='First Topic')
-    ax.scatter(reduced_embeddings[-1, 0], reduced_embeddings[-1, 1], color='green', label='Last Topic')
+        # Dimensionality Reduction
+        tsne = TSNE(n_components=2, random_state=0)
+        reduced_embeddings = tsne.fit_transform(embeddings)
 
-    # Annotate all points
-    for i, word in enumerate(topics):
-        ax.annotate(word, xy=(reduced_embeddings[i, 0], reduced_embeddings[i, 1]))
+        # Plotting with Matplotlib
+        fig, ax = plt.subplots(figsize=(12, 8))
+        ax.scatter(reduced_embeddings[:, 0], reduced_embeddings[:, 1], label='Topics')
 
-    ax.legend()
+        # Highlight the first and last topic
+        topics = game_csv['topic'].tolist()
+        ax.scatter(reduced_embeddings[0, 0], reduced_embeddings[0, 1], color='red', label='First Topic')
+        ax.scatter(reduced_embeddings[-1, 0], reduced_embeddings[-1, 1], color='green', label='Last Topic')
 
-    st.pyplot(fig)  # Use Streamlit's function to display Matplotlib figure
+        # Annotate all points
+        for i, word in enumerate(topics):
+            ax.annotate(word, xy=(reduced_embeddings[i, 0], reduced_embeddings[i, 1]))
+
+        ax.legend()
+
+        st.pyplot(fig)  # Use Streamlit's function to display Matplotlib figure
