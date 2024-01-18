@@ -90,6 +90,7 @@ class WikiGameBot():
         target_page = self.wiki_wiki.page(self.target_topic)
         self.current_summary = "" # this is overwritten after game starts
         self.target_summary = get_page_summary(target_page)
+        self.current_embedding = None
         self.printouts = []
 
         # running value of topic that is most similar to the target
@@ -172,8 +173,10 @@ class WikiGameBot():
         # get the summary of top_n // 2 pages and get the most similar summary to target summary
         top_n_summaries_to_pages = {get_page_summary(self.wiki_wiki.page(page)).strip() : page for page in top_n_pages[: top_n // 2] if get_page_summary(self.wiki_wiki.page(page)).strip()}
         top_n_pages_to_summaries = {page : summary for summary, page in top_n_summaries_to_pages.items()}
-        top_n_pages, top_n_similaries = get_most_similar_strings(self.target_summary, list(top_n_summaries_to_pages.keys()), n = top_n)
+        embs, top_n_pages, top_n_similaries = get_most_similar_strings(self.target_summary, list(top_n_summaries_to_pages.keys()), n = top_n)
         most_similar_topic, similarity_to_target = top_n_summaries_to_pages[top_n_pages[0]], top_n_similaries[0]
+        most_similar_emb = embs[most_similar_topic]
+        self.current_embedding = most_similar_emb
 
         # if similarity to target is less than the current most similar of the run thus far,
         # calculate similarities between all summary embeddings and embedding for the previously most similar topic
@@ -185,6 +188,7 @@ class WikiGameBot():
             self.most_similar_to_target = {
                 'topic' : most_similar_topic,
                 'summary' : top_n_pages_to_summaries[most_similar_topic],
+                'embedding': most_similar_emb,
                 'similarity' : similarity_to_target,
             }
 
@@ -241,6 +245,7 @@ class WikiGameBot():
                     'current_topic': current_topic,
                     'current_summary': self.current_summary,
                     'similarity_to_target': similarity_to_target,
+                    'embedding': self.current_embedding,
                     'turn_time': round(turn_time, 2),
                 }
             )

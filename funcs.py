@@ -134,9 +134,10 @@ def get_most_similar_strings(reference_string: str, candidates_list: list[str], 
     """
     reference_embedding = model.encode([reference_string])[0]
     encoded_strings = model.encode(candidates_list)
+    embs_topics = {topic: emb for topic, emb in zip(candidates_list, encoded_strings)}
     similarities = [1 - cosine(reference_embedding, encoded_str) for encoded_str in encoded_strings]
     most_similar_indices = np.argsort(similarities)[::-1][:n]
-    return [candidates_list[i] for i in most_similar_indices], [similarities[i] for i in most_similar_indices]
+    return embs_topics, [candidates_list[i] for i in most_similar_indices], [similarities[i] for i in most_similar_indices]
 
 def search_wiki(search_term):
     """Search common name for search term and returns most relevant Wiki Page"""
