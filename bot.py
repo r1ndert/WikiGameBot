@@ -178,15 +178,15 @@ class WikiGameBot():
         # if similarity to target is less than the current most similar of the run thus far,
         # calculate similarities between all summary embeddings and embedding for the previously most similar topic
         # this serves as a way to potentially redirect from topic rabbit holes
-        # if similarity_to_target < self.most_similar_to_target['similarity'] and similarity_to_target < 0.5:
-        #     top_n_pages, top_n_similaries = get_most_similar_strings(self.most_similar_to_target['summary'], list(top_n_summaries_to_pages.keys()), n = top_n)
-        #     most_similar_topic, similarity_to_target = top_n_summaries_to_pages[top_n_pages[0]], top_n_similaries[0]
-        # else:
-        #     self.most_similar_to_target = {
-        #         'topic' : most_similar_topic,
-        #         'summary' : top_n_pages_to_summaries[most_similar_topic],
-        #         'similarity' : similarity_to_target,
-        #     }
+        if similarity_to_target < self.most_similar_to_target['similarity'] and similarity_to_target < 0.5:
+            top_n_pages, top_n_similaries = get_most_similar_strings(self.most_similar_to_target['summary'], list(top_n_summaries_to_pages.keys()), n = top_n)
+            most_similar_topic, similarity_to_target = top_n_summaries_to_pages[top_n_pages[0]], top_n_similaries[0]
+        else:
+            self.most_similar_to_target = {
+                'topic' : most_similar_topic,
+                'summary' : top_n_pages_to_summaries[most_similar_topic],
+                'similarity' : similarity_to_target,
+            }
 
         return most_similar_topic, similarity_to_target # return page topic whose summary that is most similar to target summary
     
