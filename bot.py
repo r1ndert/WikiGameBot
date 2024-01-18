@@ -182,7 +182,7 @@ class WikiGameBot():
         # calculate similarities between all summary embeddings and embedding for the previously most similar topic
         # this serves as a way to potentially redirect from topic rabbit holes
         if similarity_to_target < self.most_similar_to_target['similarity'] and similarity_to_target < 0.5:
-            top_n_pages, top_n_similarities = get_most_similar_strings(self.most_similar_to_target['summary'], list(top_n_summaries_to_pages.keys()), n = top_n)
+            embs, top_n_pages, top_n_similarities = get_most_similar_strings(self.most_similar_to_target['summary'], list(top_n_summaries_to_pages.keys()), n = top_n)
             most_similar_topic, similarity_to_target = top_n_summaries_to_pages[top_n_pages[0]], top_n_similarities[0]
         else:
             self.most_similar_to_target = {
