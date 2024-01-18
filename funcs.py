@@ -142,4 +142,12 @@ def search_wiki(search_term):
     """Search common name for search term and returns most relevant Wiki Page"""
     search_url = f"https://en.wikipedia.org/w/index.php?search={'+'.join(search_term.split())}&title=Special:Search&profile=advanced&fulltext=1&ns0=1"
     soup = BeautifulSoup(requests.get(search_url, timeout=30).content, "html.parser")
-    return soup.find("div", class_ = "mw-search-result-heading").a['href'].replace("/wiki/", "").strip()
+    bad_prefixes = ["list of", "history of", "Template:", "Wikipedia:", "Category:", "Portal:", "Talk:", "Template talk:"]
+    for result in soup.find_all("div", class_ = "mw-search-result-heading"):
+        if result.a:
+            if result.a['href']:
+                text = result.a['href'].replace("/wiki/", "").strip()
+                starts_with_bad_prefix = any(text.lower().replace("_", " ").startswith(prefix.lower()) for prefix in bad_prefixes)
+                if not starts_with_bad_prefix:
+                    return text
+            
