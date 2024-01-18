@@ -93,16 +93,35 @@ def plot_topic_clusters(game_csv):
     kmeans = KMeans(n_clusters=optimal_k, random_state=42)
     game_csv['topic'] = kmeans.fit_predict(embeddings)
 
-    # Plotting the clusters
-    plt.figure(figsize=(10, 6))
-    for topic in range(optimal_k):
-        subset = game_csv[game_csv['topic'] == topic]
-        plt.plot(subset['turn'], [topic] * len(subset), 'o', label=f'Topic {topic}')
+    # # Plotting the clusters
+    # plt.figure(figsize=(10, 6))
+    # for topic in range(optimal_k):
+    #     subset = game_csv[game_csv['topic'] == topic]
+    #     plt.plot(subset['turn'], [topic] * len(subset), 'o', label=f'Topic {topic}')
 
-    plt.xlabel('Turn')
-    plt.ylabel('Topic')
-    plt.title('Topic Distribution Over Turns')
-    plt.legend()
+    # plt.xlabel('Turn')
+    # plt.ylabel('Topic')
+    # plt.title('Topic Distribution Over Turns')
+    # plt.legend()
 
-    # Display the plot in Streamlit
-    st.pyplot(plt)
+    # # Display the plot in Streamlit
+    # st.pyplot(plt)
+    plot_game_csv = game_csv.groupby(['turn', 'topic']).size().reset_index(name='count')
+
+    fig = px.line(plot_game_csv, x='turn', y='topic', markers=True, 
+                  title='Topic Selection Over Time',
+                  labels={'turn': 'Turn', 'topic': 'Topic'})
+
+    fig.update_traces(hovertemplate='Turn: %{x}<br>Topic: %{y}<br>Count: %{customdata}<extra></extra>',
+                      customdata=plot_game_csv['count'])
+
+    # Update the layout for the title and the background colors
+    fig.update_layout({
+        'title': {
+            'text': 'Topic Distribution Over Turns',
+            'x': 0.5,  # Centers the title
+            'xanchor': 'center'
+        }
+    })
+
+    st.plotly_chart(fig)  # Use Streamlit's function to display Plotly chart
