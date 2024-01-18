@@ -16,7 +16,8 @@ To determine the next page to navigate to, WikiGameBot calculates the cosine sim
 
 ## Learn More
 
-To dive deeper into how WikiGameBot was developed and explore the Python code behind it, check out the detailed article: How I Made a Bot That Can Play the Wiki Game (Python Code Included).
+To dive deeper into how WikiGameBot was developed and explore the Python code behind it, check out the detailed article: 
+https://medium.com/@kmaurinjones/how-i-made-a-bot-that-can-play-the-wiki-game-python-code-included-5d207254cf33
 
 Feel free to explore the code, contribute, or provide feedback to enhance this project further!
 
