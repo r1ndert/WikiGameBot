@@ -15,8 +15,8 @@ def line_plot(game_csv):
 
     # Update the layout for the title and the background colors
     fig.update_layout({
-        'plot_bgcolor': 'rgba(0, 0, 0, 0)',  # Transparent background
-        'paper_bgcolor': 'rgba(200, 200, 200, 1)',  # Light grey background
+        # 'plot_bgcolor': 'rgba(0, 0, 0, 0)',  # Transparent background
+        # 'paper_bgcolor': 'rgba(200, 200, 200, 1)',  # Light grey background
         'title': {
             'text': 'Line Plot of Similarity Over Time',
             'x': 0.5,  # Centers the title
