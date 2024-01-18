@@ -50,11 +50,11 @@ if st.button("Begin"):
     
     st.divider()
 
-# plotting similarity over time
-line_plot(game_csv = pd.DataFrame(game.game_log))
+    # plotting similarity over time
+    line_plot(game_csv = pd.DataFrame(game.game_log))
 
-# plotting embeddings
-plot_embeddings(game_csv = pd.DataFrame(game.game_log))
+    # plotting embeddings
+    plot_embeddings(game_csv = pd.DataFrame(game.game_log))
 
 outro_message = """
 Thanks for checking out this app. If you have any questions or comments or would like to connect for any reason, you can reach me at:
