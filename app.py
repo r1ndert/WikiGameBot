@@ -40,10 +40,10 @@ if not target_topic:
 # User begins and game starts
 if st.button("Begin"):
     st.divider()
-    st.write("Start Topic: ", start_topic)
-    st.write("Target Topic: ", target_topic)
 
     game = WikiGameBot(wiki_wiki = wiki_wiki, start_topic = start_topic, target_topic = target_topic)
+    st.write("Start Topic: ", game.start_topic)
+    st.write("Target Topic: ", game.target_topic)
     game.play_game()
     
     st.divider()
