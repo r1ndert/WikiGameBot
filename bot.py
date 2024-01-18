@@ -178,10 +178,12 @@ class WikiGameBot():
         most_similar_emb = embs[top_n_pages_to_summaries[most_similar_topic]]
         self.current_embedding = most_similar_emb
 
-        # if similarity to target is less than the current most similar of the run thus far,
+        ### if similarity to target is less than the current most similar of the run thus far,
         # calculate similarities between all summary embeddings and embedding for the previously most similar topic
         # this serves as a way to potentially redirect from topic rabbit holes
-        if similarity_to_target < self.most_similar_to_target['similarity'] and similarity_to_target < 0.5:
+        # this checks if last 3 similarity values were each trending down (returns bool)
+        trending_down_3 = all(self.most_similar_to_target['similarity'][i] < self.most_similar_to_target['similarity'][i - 1] for i in range(len(self.most_similar_to_target['similarity']) - 1, len(self.most_similar_to_target['similarity']) - 3, -1)) if len(self.most_similar_to_target['similarity']) >= 3 else False
+        if similarity_to_target < self.most_similar_to_target['similarity'] and similarity_to_target < 0.5 and trending_down_3:
             embs, top_n_pages, top_n_similarities = get_most_similar_strings(self.most_similar_to_target['summary'], list(top_n_summaries_to_pages.keys()), n = top_n)
             most_similar_topic, similarity_to_target = top_n_summaries_to_pages[top_n_pages[0]], top_n_similarities[0]
             most_similar_emb = embs[top_n_pages_to_summaries[most_similar_topic]]
