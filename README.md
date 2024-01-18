@@ -27,4 +27,5 @@ Enjoy the WikiGame adventure!
 You can reach out to me via one of the following ways to connect about this project or anything else.
 
 Email: kmaurinjones@gmail.com
+
 LinkedIn: https://www.linkedin.com/in/kmaurinjones/
