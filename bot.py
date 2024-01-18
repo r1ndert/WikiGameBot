@@ -173,17 +173,17 @@ class WikiGameBot():
         # get the summary of top_n // 2 pages and get the most similar summary to target summary
         top_n_summaries_to_pages = {get_page_summary(self.wiki_wiki.page(page)).strip() : page for page in top_n_pages[: top_n // 2] if get_page_summary(self.wiki_wiki.page(page)).strip()}
         top_n_pages_to_summaries = {page : summary for summary, page in top_n_summaries_to_pages.items()}
-        embs, top_n_pages, top_n_similaries = get_most_similar_strings(self.target_summary, list(top_n_summaries_to_pages.keys()), n = top_n)
-        most_similar_topic, similarity_to_target = top_n_summaries_to_pages[top_n_pages[0]], top_n_similaries[0]
-        most_similar_emb = embs[top_n_similaries[top_n_pages[0]]]
+        embs, top_n_pages, top_n_similarities = get_most_similar_strings(self.target_summary, list(top_n_summaries_to_pages.keys()), n = top_n)
+        most_similar_topic, similarity_to_target = top_n_summaries_to_pages[top_n_pages[0]], top_n_similarities[0]
+        most_similar_emb = embs[top_n_pages_to_summaries[most_similar_topic]]
         self.current_embedding = most_similar_emb
 
         # if similarity to target is less than the current most similar of the run thus far,
         # calculate similarities between all summary embeddings and embedding for the previously most similar topic
         # this serves as a way to potentially redirect from topic rabbit holes
         if similarity_to_target < self.most_similar_to_target['similarity'] and similarity_to_target < 0.5:
-            top_n_pages, top_n_similaries = get_most_similar_strings(self.most_similar_to_target['summary'], list(top_n_summaries_to_pages.keys()), n = top_n)
-            most_similar_topic, similarity_to_target = top_n_summaries_to_pages[top_n_pages[0]], top_n_similaries[0]
+            top_n_pages, top_n_similarities = get_most_similar_strings(self.most_similar_to_target['summary'], list(top_n_summaries_to_pages.keys()), n = top_n)
+            most_similar_topic, similarity_to_target = top_n_summaries_to_pages[top_n_pages[0]], top_n_similarities[0]
         else:
             self.most_similar_to_target = {
                 'topic' : most_similar_topic,
