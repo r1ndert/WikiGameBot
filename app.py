@@ -54,7 +54,7 @@ if st.button("Begin"):
     line_plot(game_csv = pd.DataFrame(game.game_log))
 
     # plotting embeddings
-    plot_embeddings(game_csv = pd.DataFrame(game.game_log))
+    # plot_embeddings(game_csv = pd.DataFrame(game.game_log))
     
     # plotting topic clusters
     plot_topic_clusters(game_csv = pd.DataFrame(game.game_log))
