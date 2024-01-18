@@ -65,7 +65,7 @@ def plot_embeddings(game_csv):
 
 def plot_topic_clusters(game_csv):
 
-    # Assuming 'df' is your pandas DataFrame, 'embedding' and 'turn' are the columns
+    # Assuming 'game_csv' is your pandas DataFrame, 'embedding' and 'turn' are the columns
     embeddings = pd.DataFrame(game_csv['embedding'].tolist())
 
     # Function to calculate the optimal number of clusters
@@ -77,13 +77,17 @@ def plot_topic_clusters(game_csv):
 
     # Elbow Method to find the optimal number of clusters
     sse = []
-    K = range(1, 11)  # max 10 topics
+    max_clusters = min(len(embeddings), 10)  # Ensure max clusters do not exceed number of samples
+    K = range(1, max_clusters + 1)
     for k in K:
         kmeans = KMeans(n_clusters=k, random_state=42)
         kmeans.fit(embeddings)
         sse.append(kmeans.inertia_)
 
     optimal_k = calculate_optimal_k(sse, np.array(K))
+
+    # Ensure optimal_k is not greater than the number of samples
+    optimal_k = min(optimal_k, len(embeddings))
 
     # K-Means Clustering with the optimal number of clusters
     kmeans = KMeans(n_clusters=optimal_k, random_state=42)
