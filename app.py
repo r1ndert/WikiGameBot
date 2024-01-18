@@ -1,6 +1,8 @@
 import streamlit as st
 from funcs import *
 from bot import *
+from plots import *
+import pandas as pd
 
 # doing this first to ensure things will work
 def generate_random_string(length):
@@ -47,6 +49,12 @@ if st.button("Begin"):
     game.play_game()
     
     st.divider()
+
+# plotting similarity over time
+line_plot(game_csv = pd.DataFrame(game.game_log))
+
+# plotting embeddings
+plot_embeddings(game_csv = pd.DataFrame(game.game_log))
 
 outro_message = """
 Thanks for checking out this app. If you have any questions or comments or would like to connect for any reason, you can reach me at:

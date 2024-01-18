@@ -80,6 +80,7 @@ class WikiGameBot():
             'current_topic': [],    # current topic
             'current_summary': [],  # summary for current topic
             'similarity_to_target': [],  # similarity to target
+            'embedding': [],        # topic summary embedding
         }
 
         # get start and target topics and their respective summaries
