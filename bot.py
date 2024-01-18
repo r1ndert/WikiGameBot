@@ -175,6 +175,7 @@ class WikiGameBot():
         top_n_pages_to_summaries = {page : summary for summary, page in top_n_summaries_to_pages.items()}
         embs, top_n_pages, top_n_similaries = get_most_similar_strings(self.target_summary, list(top_n_summaries_to_pages.keys()), n = top_n)
         most_similar_topic, similarity_to_target = top_n_summaries_to_pages[top_n_pages[0]], top_n_similaries[0]
+        print(embs)
         most_similar_emb = embs[most_similar_topic]
         self.current_embedding = most_similar_emb
 
