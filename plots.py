@@ -1,9 +1,10 @@
 import streamlit as st
-import plotly.express as px
-from sklearn.manifold import TSNE
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import plotly.express as px
+from sklearn.manifold import TSNE
+from sklearn.cluster import KMeans
+import matplotlib.pyplot as plt
 
 def line_plot(game_csv):
     fig = px.line(game_csv, x='turn', y='similarity_to_target', markers=True,
@@ -61,3 +62,41 @@ def plot_embeddings(game_csv):
         ax.legend()
 
         st.pyplot(fig)  # Use Streamlit's function to display Matplotlib figure
+
+def plot_topic_clusters(game_csv):
+
+    # Assuming 'df' is your pandas DataFrame, 'embedding' and 'turn' are the columns
+    embeddings = pd.DataFrame(game_csv['embedding'].tolist())
+
+    # Function to calculate the optimal number of clusters
+    def calculate_optimal_k(sse, K):
+        # Calculate the second derivative
+        second_derivative = np.diff(sse, 2)
+        optimal_k = K[np.argmax(second_derivative) + 1]  # +1 due to the difference in indices
+        return optimal_k
+
+    # Elbow Method to find the optimal number of clusters
+    sse = []
+    K = range(1, 11)  # max 10 topics
+    for k in K:
+        kmeans = KMeans(n_clusters=k, random_state=42)
+        kmeans.fit(embeddings)
+        sse.append(kmeans.inertia_)
+
+    optimal_k = calculate_optimal_k(sse, np.array(K))
+
+    # K-Means Clustering with the optimal number of clusters
+    kmeans = KMeans(n_clusters=optimal_k, random_state=42)
+    game_csv['topic'] = kmeans.fit_predict(embeddings)
+
+    # Plotting the clusters
+    plt.figure(figsize=(10, 6))
+    for topic in range(optimal_k):
+        subset = game_csv[game_csv['topic'] == topic]
+        plt.plot(subset['turn'], [topic] * len(subset), 'o', label=f'Topic {topic}')
+
+    plt.xlabel('Turn')
+    plt.ylabel('Topic')
+    plt.title('Topic Distribution Over Turns')
+    plt.legend()
+    plt.show()

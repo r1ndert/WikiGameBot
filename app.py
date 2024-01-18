@@ -55,6 +55,9 @@ if st.button("Begin"):
 
     # plotting embeddings
     plot_embeddings(game_csv = pd.DataFrame(game.game_log))
+    
+    # plotting topic clusters
+    plot_topic_clusters(game_csv = pd.DataFrame(game.game_log))
 
 outro_message = """
 Thanks for checking out this app. If you have any questions or comments or would like to connect for any reason, you can reach me at:
